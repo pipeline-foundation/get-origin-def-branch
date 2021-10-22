@@ -1,0 +1,15 @@
+name: ''
+description: ''
+inputs:
+  input-1:  # id of input
+    description: ''
+    required: true
+    default: ''
+outputs:
+  output-2: # id of output
+    description: ''
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
+
+# run npm init -y in the root folder of the repository

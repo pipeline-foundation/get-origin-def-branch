@@ -1,0 +1,5 @@
+codescanning:
+  level: warning
+
+dependabot:
+  level: low

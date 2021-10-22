@@ -1,0 +1,193 @@
+name: CI/CD pipeline
+
+on:
+  push:
+    tags-ignore:
+      - '**'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  ci:
+    name: Continuous Integration
+    runs-on: ubuntu-20.04
+    container: ${{ secrets.DOCKERHUB_USERNAME }}/PROJECTNAME-runner:ci-${{ matrix.node-version }}
+    outputs:
+      package_version: ${{ steps.proj_ver_determiner.outputs.package_version }}
+      package_version_tag: ${{ steps.proj_ver_determiner.outputs.package_version_tag }}
+      latest_github_tag: ${{ steps.proj_ver_determiner.outputs.latest_github_tag }}
+      should_deploy: ${{ steps.proj_ver_determiner.outputs.should_deploy }}
+    strategy:
+      matrix:
+        node-version: [ 12.x, 14.x, 16.x ]
+    steps:
+      - name: Clone repository
+        shell: bash
+        run: |
+          git config --global http.sslverify false
+          git clone https://github.com/${{ github.repository }}.git .
+
+      # Information setup
+
+      - if: matrix.node-version == '16.x'
+        name: Pipeline data gatherer
+        id: data_gatherer
+        run: |
+          # Get default branch
+          REPO="${{ github.repository }}"
+          DEFAULT_BRANCH=`(curl -X GET https://api.github.com/repos/$REPO) | jq '.default_branch'`
+
+          echo "::set-output name=default_branch::$(echo $DEFAULT_BRANCH)"
+
+      - if: matrix.node-version == '16.x'
+        name: Pipeline conditionals handler
+        id: conditionals_handler
+        run: |
+          DEFAULT_BRANCH="${{ steps.data_gatherer.outputs.default_branch }}"
+          GITHUB_REF="${{ github.ref }}"
+          CURRENT_BRANCH=`echo $GITHUB_REF | sed -e "s/^refs\/heads\///"`
+          GITHUB_EVENT_NAME="${{ github.event_name }}"
+          IS_DEFAULT_BRANCH='false'
+          IS_PUSH='false'
+          IS_PUSH_TO_DEFAULT_BRANCH='false'
+
+          if [ $CURRENT_BRANCH == $DEFAULT_BRANCH ]; then
+            IS_DEFAULT_BRANCH='true'
+          fi
+          if [ $GITHUB_EVENT_NAME == 'push' ]; then
+            IS_PUSH='true'
+          fi
+          if [ $CURRENT_BRANCH == $DEFAULT_BRANCH ] && [ $GITHUB_EVENT_NAME == 'push' ]; then
+            IS_PUSH_TO_DEFAULT_BRANCH='true'
+          fi
+
+          echo "::set-output name=is_default_branch::$(echo $IS_DEFAULT_BRANCH)"
+          echo "::set-output name=is_push::$(echo $IS_PUSH)"
+          echo "::set-output name=is_push_to_default_branch::$(echo $IS_PUSH_TO_DEFAULT_BRANCH)"
+
+      - if: steps.conditionals_handler.outputs.is_push_to_default_branch == 'true' && matrix.node-version == '16.x'
+        name: Project version/deploy determiner
+        id: proj_ver_determiner
+        run: |
+          git fetch --all --tags
+
+          ORIGINAL_REPO="OWNER/PROJECTNAME"
+          CURRENT_REPO="${{ github.repository }}"
+          PACKAGE_VERSION=$(cat package.json \
+            | grep version \
+            | head -1 \
+            | awk -F: '{ print $2 }' \
+            | sed 's/[",]//g')
+          PACKAGE_VERSION_TAG=`echo v$PACKAGE_VERSION | sed -e 's/[[:space:]]//'`
+          LATEST_GITHUB_TAG=`echo $(git tag | sort --version-sort | tail -n1)`
+          SHOULD_DEPLOY="false"
+
+          # download semver compare tool
+          curl https://raw.githubusercontent.com/Ariel-Rodriguez/sh-semversion-2/main/semver2.sh -o semver2.sh
+          chmod +x semver2.sh
+
+          if [ "$CURRENT_REPO" == "$ORIGINAL_REPO" ] && [ -z "$LATEST_GITHUB_TAG" ] || [ `echo $(./semver2.sh $PACKAGE_VERSION_TAG $LATEST_GITHUB_TAG)` = 1 ]; then
+            SHOULD_DEPLOY="true"
+          fi
+
+          echo "::set-output name=package_version::$(echo $PACKAGE_VERSION)"
+          echo "::set-output name=package_version_tag::$(echo $PACKAGE_VERSION_TAG)"
+          echo "::set-output name=latest_github_tag::$(echo $LATEST_GITHUB_TAG)"
+          echo "::set-output name=should_deploy::$(echo $SHOULD_DEPLOY)"
+
+      # Build and test validation
+
+      - name: Create logs directory
+        run: |
+          mkdir -p logs
+
+      - name: Install dependencies
+        run: |
+          npm ci --loglevel verbose 2>&1 | tee logs/install.log
+          exit ${PIPESTATUS[0]} # without this explicit exit code return, even if the previous command fails, the step won't return error because of 'tee'
+
+      - name: Build the app
+        run: |
+          npm run build --if-present --loglevel verbose 2>&1 | tee logs/build.log
+          exit ${PIPESTATUS[0]}
+
+      - name: Run tests
+        run: |
+          npm test --loglevel verbose 2>&1 | tee logs/test.log
+          exit ${PIPESTATUS[0]}
+
+      # Artifact publish to pipeline
+
+      - name: Upload logs as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: Logs ${{ matrix.node-version }}
+          path: logs/
+
+      # GitHub Advanced Security Compliance
+
+      - if: matrix.node-version == '16.x'
+        name: GHASC check # runs right before deployment to fail the pipeline if security issues are found
+        uses: GeekMasher/advanced-security-compliance@v1.5
+        with:
+          policy-path: policies/security-policy.yml
+          token: ${{ secrets.GHASC_TOKEN }} # token requires 'public_repo' and 'security_events' scopes
+
+  cd:
+    if: needs.build.outputs.should_deploy == 'true'
+    name: Continuous Deployment
+    needs: ci
+    runs-on: ubuntu-20.04
+    container: ${{ secrets.DOCKERHUB_USERNAME }}/PROJECTNAME-runner:cd-16.x
+    steps:
+      - name: Clone repository
+        run: |
+          git config --global http.sslverify false
+          git clone https://token:${{ secrets.GIT_REPO_TOKEN }}@github.com/${{ github.repository }}.git .
+
+      # Package deploy
+
+      - name: Deploy to npm
+        run: |
+          echo $'registry=https://registry.npmjs.org/\n' //registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }} > .npmrc
+
+          npm ci
+
+          npm publish --access public
+
+          rm -f .npmrc
+
+      # GitHub deploy
+
+      - name: Push GitHub tag
+        run: |
+          GITHUB_TAG="${{ needs.build.outputs.package_version_tag }}"
+
+          git config --global user.email ${{ secrets.GH_USER_EMAIL }}
+          git config --global user.name ${{ secrets.GH_USER_NAME }}
+          git tag $GITHUB_TAG
+          git push origin --tags
+
+      - name: Create and publish release
+        run: |
+          RELEASE_TAG="${{ needs.build.outputs.package_version_tag }}"
+          PREVIOUS_TAG="${{ needs.build.outputs.latest_github_tag }}"
+          RELEASE_TITLE="$RELEASE_TAG"
+          START_LINE=$(( $( grep -n "## $RELEASE_TAG" CHANGELOG.md | grep -Eo '^[^:]+' ) + 2 ))
+          END_LINE=$(( $( grep -n "## $PREVIOUS_TAG" CHANGELOG.md | grep -Eo '^[^:]+' ) - 2 ))
+          RELEASE_NOTES=$(echo $'### Changelog:\n\n' "$( sed -n "$START_LINE,$END_LINE"p CHANGELOG.md )")
+          RELEASE_ASSETS="" # list the relative paths to the files separated by a single space
+
+          gh release create $RELEASE_TAG \
+          --title $RELEASE_TITLE \
+          --notes "$RELEASE_NOTES" \
+          $RELEASE_ASSETS
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # - name: Deploy app to Heroku
+      #   uses: akhileshns/heroku-deploy@v3.12.12
+      #   with:
+      #     heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+      #     heroku_app_name: "aais-simple-node-api"
+      #     heroku_email: "aleksandar.ivanov@singlet.dev"

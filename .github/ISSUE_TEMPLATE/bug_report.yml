@@ -1,0 +1,36 @@
+name: Bug Report
+description: File a bug report
+title: "[Bug]: "
+labels: ["bug", "triage"]
+assignees:
+  - aleks-ivanov
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened ?
+      placeholder: Tell us what you see!
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behaviour
+    attributes:
+      label: What was the expected behaviour ?
+      placeholder: Tell us what you wanted to see!
+    validations:
+      required: true
+  - type: textarea
+    id: how-to-reproduce
+    attributes:
+      label: How to reproduce the bug ?
+      placeholder: Tell us what to do!
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        We'd really appreciate a contribution! Thank you!
