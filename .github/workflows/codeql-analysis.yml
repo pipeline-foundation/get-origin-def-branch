@@ -6,8 +6,12 @@ on:
     branches-ignore:
       - 'dependabot/**'
     tags-ignore:
-      - "**"
+      - '**'
+    paths:
+      - 'index.js'
   pull_request:
+    paths:
+      - 'index.js'
   schedule:
     - cron: '0 8 * * *'
   workflow_dispatch:
