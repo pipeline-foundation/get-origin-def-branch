@@ -1,6 +1,6 @@
 {
 	"name": "devcontainer",
-	"image": "/PROJECTNAME-devcontainer:1.0.0",
+	"image": "pipelinefoundation/pf-devcontainer:1.0.0-alpine",
 	"settings": {
 		"workbench.colorTheme": "Default Dark+",
 		"terminal.integrated.defaultProfile.linux": "bash"
@@ -9,17 +9,17 @@
 		// VS Code specific
 		"coenraads.bracket-pair-colorizer",
 		"vscode-icons-team.vscode-icons",
-		"editorconfig.editorconfig",
 		// GitHub specific
 		"eamodio.gitlens",
 		"cschleiden.vscode-github-actions",
-		"redhat.vscode-yaml",
 		"bierner.markdown-preview-github-styles",
 		"ban.spellright",
+		"GitHub.copilot",
+		"ms-azuretools.vscode-docker",
 		// JS/TS specific
 		"dbaeumer.vscode-eslint",
 		"ms-vscode.vscode-typescript-next",
 		"ecmel.vscode-html-css",
 	],
-	"postCreateCommand": "",
+	"remoteUser": "vscode"
 }
