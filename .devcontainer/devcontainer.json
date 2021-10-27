@@ -1,6 +1,6 @@
 {
 	"name": "devcontainer",
-	"image": "pipelinefoundation/pf-devcontainer:1.0.0-alpine",
+	"image": "pipelinefoundation/js-devcontainer:1.0.0-alpine3.14",
 	"settings": {
 		"workbench.colorTheme": "Default Dark+",
 		"terminal.integrated.defaultProfile.linux": "bash"
@@ -21,5 +21,4 @@
 		"ms-vscode.vscode-typescript-next",
 		"ecmel.vscode-html-css",
 	],
-	"remoteUser": "vscode"
 }
