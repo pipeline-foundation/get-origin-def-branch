@@ -1,0 +1,26 @@
+{
+  "name": "get-origin-def-branch",
+  "version": "1.0.0",
+  "description": "This action prints \"Hello World\" or \"Hello\" + the name of a person to greet to the log.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://token: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@github.com/pipeline-foundation/get-origin-def-branch.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pipeline-foundation/get-origin-def-branch/issues"
+  },
+  "homepage": "https://github.com/pipeline-foundation/get-origin-def-branch#readme",
+  "dependencies": {
+    "@actions/core": "^1.6.0",
+    "@actions/github": "^5.0.0",
+    "@octokit/core": "^3.5.1",
+    "@octokit/request": "^5.6.2"
+  }
+}

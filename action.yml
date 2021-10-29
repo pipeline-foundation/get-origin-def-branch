@@ -1,15 +1,15 @@
-name: ''
-description: ''
+name: 'Get origin default branch'
+description: 'The action dynamically pulls the default branch of a remote origin repository and outputs it.'
 inputs:
-  input-1:  # id of input
-    description: ''
+  origin:  # id of input
+    description: 'Owner/repo pair of the target repository.'
     required: true
-    default: ''
+    default: '${{ github.repository }}'
 outputs:
-  output-2: # id of output
-    description: ''
+  default_branch: # id of output
+    description: 'This is the default branch of the target repository.'
 runs:
-  using: 'node12'
-  main: 'dist/index.js'
+  using: 'dockerfile'
+  main: 'Dockerfile'
 
 # run npm init -y in the root folder of the repository
