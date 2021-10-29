@@ -8,10 +8,10 @@ on:
     tags-ignore:
       - '**'
     paths:
-      - 'index.js'
+      - 'src/index.js'
   pull_request:
     paths:
-      - 'index.js'
+      - 'src/index.js'
   schedule:
     - cron: '0 8 * * *'
   workflow_dispatch:

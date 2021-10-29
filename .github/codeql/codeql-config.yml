@@ -2,6 +2,7 @@ name: "CodeQL config"
 
 paths-ignore: 
   - test/**
+  - dist/**
 
 queries:
   - name: Security and quality internal queries
