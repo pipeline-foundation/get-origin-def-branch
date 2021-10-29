@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://token: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@github.com/pipeline-foundation/get-origin-def-branch.git"
+    "url": "git+https://github.com/pipeline-foundation/get-origin-def-branch.git"
   },
   "keywords": [],
   "author": "",
