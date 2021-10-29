@@ -9,7 +9,7 @@ outputs:
   default_branch: # id of output
     description: 'This is the default branch of the target repository.'
 runs:
-  using: 'dockerfile'
+  using: 'docker'
   main: 'Dockerfile'
 
 # run npm init -y in the root folder of the repository
