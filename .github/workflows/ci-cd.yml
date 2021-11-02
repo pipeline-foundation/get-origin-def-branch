@@ -23,8 +23,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm install --production=false
-          eslint src/
+          yarn
 
       - name: Lint Code Base
         run: |
