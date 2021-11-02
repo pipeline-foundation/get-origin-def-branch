@@ -24,6 +24,7 @@ jobs:
       - name: Install dependencies
         run: |
           npm install --globally --loglevel verbose
+          eslint src/
 
       - name: Lint Code Base
         run: |
