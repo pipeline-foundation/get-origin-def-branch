@@ -23,4 +23,5 @@ jobs:
 
       - name: Lint Code Base
         run: |
+          npm install -g eslint
           eslint src --ext .js,.jsx,.ts,.tsx
