@@ -23,8 +23,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm install --loglevel verbose
+          npm install --globally --loglevel verbose
 
       - name: Lint Code Base
         run: |
-          eslint src --ext .js,.jsx,.ts,.tsx
+          eslint src/
