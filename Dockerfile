@@ -1,4 +1,4 @@
-FROM node:16.11.1-alpine3.14
+FROM node:17.0.1-alpine3.14
 
 COPY dist dist
 
