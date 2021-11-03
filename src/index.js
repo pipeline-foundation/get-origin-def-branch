@@ -1,18 +1,18 @@
-const core = require('@actions/core');
-const { request } = require('@octokit/request');
+const core = require('@actions/core')
+const { request } = require('@octokit/request')
 
 try {
-	getDefaultBranch().then((data) => {
-		console.log(`default branch is ${data}`);
-		core.setOutput("default_branch", data);
-	});
+  getDefaultBranch().then((data) => {
+    console.log(`default branch is ${data}`)
+    core.setOutput('default_branch', data)
+  })
 
-	async function getDefaultBranch() {
-  		const origin = core.getInput('origin');
-		const repositoryPayload = await request(`GET /repos/${origin}`);
-		const defaultBranch = await repositoryPayload.data.default_branch;
-		return defaultBranch;
-	}
+  async function getDefaultBranch() {
+    const origin = core.getInput('origin')
+    const repositoryPayload = await request(`GET /repos/${origin}`)
+    const defaultBranch = await repositoryPayload.data.default_branch
+    return defaultBranch
+  }
 } catch (error) {
-  	core.setFailed(error.message);
+  core.setFailed(error.message)
 }
