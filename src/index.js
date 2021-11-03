@@ -7,7 +7,7 @@ try {
     core.setOutput('default_branch', data)
   })
 
-  async function getDefaultBranch() {
+  async function getDefaultBranch () {
     const origin = core.getInput('origin')
     const repositoryPayload = await request(`GET /repos/${origin}`)
     const defaultBranch = await repositoryPayload.data.default_branch

@@ -3,7 +3,10 @@
   "description": "This action prints \"Hello World\" or \"Hello\" + the name of a person to greet to the log.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+	"restore": "npm install",
+	"build": "npx ncc build src/index.js --license licenses.txt",
+	"test": "",
+	"lint": "npx eslint src/index.js"
   },
   "repository": {
     "type": "git",
