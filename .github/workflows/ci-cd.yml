@@ -83,3 +83,5 @@ jobs:
           git config --global user.name "${{ secrets.PF_USERNAME }}"
           git tag -f -a v1 -m "point v1 to ${{ needs.ci.outputs.new_version_tag }}"
           git push -f origin v1
+
+# Built with ❤ by [Pipeline Foundation](https://pipeline.foundation)

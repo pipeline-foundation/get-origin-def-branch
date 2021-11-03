@@ -16,3 +16,5 @@ try {
 } catch (error) {
   core.setFailed(error.message)
 }
+
+// Built with ❤ by [Pipeline Foundation](https://pipeline.foundation)
