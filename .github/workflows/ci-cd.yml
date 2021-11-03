@@ -15,6 +15,12 @@ jobs:
   ci:
     name: Continuous Integration
     runs-on: ubuntu-20.04
+    outputs:
+      origin_repo: '${{ github.repository }}'
+      new_version: '${{ steps.tag_generator.outputs.new_version }}'
+      new_version_tag: '${{ steps.tag_generator.outputs.new_tag }}'
+      previous_version: '${{ steps.tag_generator.outputs.previous_version }}'
+      previous_version_tag: '${{ steps.tag_generator.outputs.previous_tag }}'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -36,3 +42,36 @@ jobs:
         with:
           policy-path: policies/security-policy.yml
           token: ${{ secrets.GHASC_TOKEN }} # token requires 'public_repo' and 'security_events' scopes
+
+      - name: GitHub tag generator
+        id: tag_generator
+        uses: mathieudutour/github-tag-action@v5.5
+        with: 
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          default_bump: false
+          release_branches: main
+
+  cd:
+    if: needs.ci.outputs.new_version_tag == '' && needs.ci.outputs.origin_repo != 'pipeline-foundation/get-origin-def-branch'
+    name: Continuous Deployment
+    needs: ci
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Create and publish release
+        run: |
+          RELEASE_TAG="${{ needs.ci.outputs.new_version_tag }}"
+          PREVIOUS_TAG="${{ needs.ci.outputs.previous_version_tag }}"
+          RELEASE_TITLE="$RELEASE_TAG"
+          START_LINE=$(( $( grep -n "## $RELEASE_TAG" CHANGELOG.md | grep -Eo '^[^:]+' ) + 2 ))
+          END_LINE=$(( $( grep -n "## $PREVIOUS_TAG" CHANGELOG.md | grep -Eo '^[^:]+' ) - 2 ))
+          RELEASE_NOTES=$(echo $'### Changelog:\n\n' "$( sed -n "$START_LINE,$END_LINE"p CHANGELOG.md )")
+          RELEASE_ASSETS="" # list the relative paths to the files separated by a single space
+          gh release create $RELEASE_TAG \
+          --title "$RELEASE_TITLE" \
+          --notes "$RELEASE_NOTES" \
+          $RELEASE_ASSETS
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
