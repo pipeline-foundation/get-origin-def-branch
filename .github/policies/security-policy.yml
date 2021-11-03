@@ -1,5 +1,5 @@
 codescanning:
-  level: warning
+  level: notes
 
 dependabot:
   level: low
