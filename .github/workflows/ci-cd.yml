@@ -6,8 +6,8 @@ on:
       - '**'
     tags-ignore:
       - '**'
-    # paths:
-    #   - 'src/index.js'
+    paths:
+      - 'src/index.js'
   pull_request:
     paths:
       - 'src/index.js'
