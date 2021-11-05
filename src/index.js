@@ -15,6 +15,7 @@ try {
   }
 } catch (error) {
   core.setFailed(error.message)
+  console.log(error.message)
 }
 
 // Built with ❤ by [Pipeline Foundation](https://pipeline.foundation)
