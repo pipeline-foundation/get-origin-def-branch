@@ -2,8 +2,10 @@ name: CI/CD pipeline
 
 on:
   push:
-    tags-ignore:
+    branches:
       - '**'
+    tags:
+      - '!**'
     paths:
       - 'src/index.js'
   pull_request:

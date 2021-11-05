@@ -2,11 +2,12 @@ name: CodeQL Analysis
 
 on:
   push:
-    # ignore dependabot branches on push -> https://github.com/microsoft/binskim/issues/425#issuecomment-893373709
-    branches-ignore:
-      - 'dependabot/**'
-    tags-ignore:
+    branches:
       - '**'
+    # ignore dependabot branches on push -> https://github.com/microsoft/binskim/issues/425#issuecomment-893373709
+      - '!dependabot/**'
+    tags:
+      - '!**'
     paths:
       - 'src/index.js'
   pull_request:
