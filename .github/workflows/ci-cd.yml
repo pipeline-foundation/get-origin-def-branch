@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - '**'
-    tags-ignore:
-      - '**'
+    tags:
+      - '!**'
     paths:
       - 'src/index.js'
   pull_request:
