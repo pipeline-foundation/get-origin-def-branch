@@ -8,6 +8,9 @@ inputs:
 outputs:
   default_branch: # id of output
     description: 'This is the default branch of the target repository.'
+branding:
+  icon: 'git-branch'
+  color: 'blue'
 runs:
   using: 'docker'
   image: 'Dockerfile'
