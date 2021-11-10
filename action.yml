@@ -1,5 +1,5 @@
 name: 'Get origin default branch'
-description: 'The action dynamically pulls the default branch of a remote origin repository and outputs it.'
+description: 'The action dynamically outputs the default branch from the remote origin of a public repository.'
 inputs:
   origin:  # id of input
     description: 'Owner/repo pair of the target repository.'
