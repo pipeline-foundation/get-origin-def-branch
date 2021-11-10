@@ -18,7 +18,7 @@ jobs:
     name: Continuous Integration
     runs-on: ubuntu-20.04
     outputs:
-      origin_repo: '${{ github.repository }}'
+      origin_repo: 'pipeline-foundation/get-origin-def-branch'
       new_version: '${{ steps.tag_generator.outputs.new_version }}'
       new_version_tag: '${{ steps.tag_generator.outputs.new_tag }}'
       previous_version: '${{ steps.tag_generator.outputs.previous_version }}'
@@ -43,9 +43,10 @@ jobs:
         uses: GeekMasher/advanced-security-compliance@v1.5
         with:
           policy-path: policies/security-policy.yml
-          token: ${{ secrets.GHASC_TOKEN }} # token requires 'public_repo' and 'security_events' scopes
+          token: ${{ secrets.GITHUB_TOKEN }} # token requires 'public_repo' and 'security_events' scopes
 
-      - name: GitHub tag generator
+      - if: github.ref == 'refs/heads/main' 
+        name: GitHub tag generator
         id: tag_generator
         uses: mathieudutour/github-tag-action@v5.5
         with: 
@@ -54,7 +55,7 @@ jobs:
           release_branches: main
 
   cd:
-    if: needs.ci.outputs.new_version_tag == '' && needs.ci.outputs.origin_repo != 'pipeline-foundation/get-origin-def-branch'
+    if: needs.ci.outputs.new_version_tag != '' && github.repository == needs.ci.outputs.origin_repo
     name: Continuous Deployment
     needs: ci
     runs-on: ubuntu-20.04
@@ -77,13 +78,5 @@ jobs:
           $RELEASE_ASSETS
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Point new tag to major ref
-        run: |
-          git checkout main
-          git config --global user.email "${{ secrets.PF_EMAIL }}"
-          git config --global user.name "${{ secrets.PF_USERNAME }}"
-          git tag -f -a v1 -m "point v1 to ${{ needs.ci.outputs.new_version_tag }}"
-          git push -f origin v1
 
 # Built with ❤ by [Pipeline Foundation](https://pipeline.foundation)
