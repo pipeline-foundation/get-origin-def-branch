@@ -1,21 +1,47 @@
-# ActionName
+# Get origin default branch
 
-This action prints "Hello World" or "Hello" + the name of a person to greet to the log.
+This is an action that dynamically outputs the default branch from the remote origin of a public repository.
+
+By default, it outputs the default branch from the remote origin of the `current` repository.
 
 ## Inputs
 
-## `NameOfInput`
+### `origin`
 
-**Required** DescriptionOfInput.
+The owner/repo pair of the target repository.
+
+**Default**: `${{ github.repository }}`
 
 ## Outputs
 
-## `NameOfOutput`
+### `default_branch`
 
-DescriptionOfOutput.
+The name of the default branch of the target repository e.g. 'main', 'release' etc.
 
 ## Example usage
 
-uses: actions/name-of-action@v1.1
-with:
-  name_of_input: "World"
+#### 1. Default action usage
+- this way the action would output the default branch of the current repository from its origin remote:
+
+```
+  - name: Get default branch from origin
+    id: get-origin-default-branch
+    uses: pipeline-foundation/get-origin-def-branch@v1.0.0
+```
+
+#### 2. Custom action usage
+- this way the action would output the default branch of a user-defined repository from its origin remote
+
+```
+  - name: Get default branch from origin of owner/repo
+    id: get-origin-default-branch
+    uses: pipeline-foundation/get-origin-def-branch@v1.0.0
+    with:
+      origin: owner/repo
+```
+
+#### 3. Consuming the output
+- to consume the output, use the following reference:
+```
+  ${{ steps.get-origin-default-branch.outputs.default_branch }}
+```
