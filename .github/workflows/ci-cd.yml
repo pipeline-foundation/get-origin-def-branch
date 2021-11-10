@@ -43,7 +43,7 @@ jobs:
         uses: GeekMasher/advanced-security-compliance@v1.5
         with:
           policy-path: policies/security-policy.yml
-          token: ${{ secrets.GITHUB_TOKEN }} # token requires 'public_repo' and 'security_events' scopes
+          token: ${{ secrets.GHASC_TOKEN }} # token requires 'public_repo' and 'security_events' scopes
 
       - if: github.ref == 'refs/heads/main' 
         name: GitHub tag generator
