@@ -8,9 +8,9 @@
   "scripts": {
     "restore": "npm install",
     "build": "npx esbuild src/index.js --bundle --outfile=dist/index.js --platform=node",
+    "watch": "npx esbuild src/index.js --bundle --outfile=dist/index.js --platform=node --watch",
     "test": "",
-    "lint": "npx eslint src/index.js",
-    "watch": "npx esbuild src/index.js --bundle --outfile=dist/index.js --platform=node --watch"
+    "lint": "npx eslint src/index.js"
   },
   "repository": {
     "type": "git",

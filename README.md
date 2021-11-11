@@ -18,7 +18,7 @@ The owner/repo pair of the target repository.
 
 The name of the default branch of the target repository e.g. 'main', 'release' etc.
 
-## Example usage
+## Usage
 
 #### 1. Default action usage
 - this way the action would output the default branch of the current repository from its origin remote:
@@ -45,3 +45,7 @@ The name of the default branch of the target repository e.g. 'main', 'release' e
 ```
   ${{ steps.get-origin-default-branch.outputs.default_branch }}
 ```
+
+## Contributing
+
+Thank you for considering a contribution to this project! Please check out our detailed [contribution guide](./CONTRIBUTING.md) to learn more about how to help us improve the project.
