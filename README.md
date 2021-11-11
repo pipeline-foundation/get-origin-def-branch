@@ -13,7 +13,7 @@ The owner/repo pair of the target repository.
 **Default**: `${{ github.repository }}`
 
 ## Outputs
-
+ 
 ### `default_branch`
 
 The name of the default branch of the target repository e.g. 'main', 'release' etc.
