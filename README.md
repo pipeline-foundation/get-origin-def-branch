@@ -48,4 +48,4 @@ The name of the default branch of the target repository e.g. 'main', 'release' e
 
 ## Contributing
 
-Thank you for considering a contribution to this project! Please check out our detailed [contribution guide](./CONTRIBUTING.md) to learn more about how to help us improve the project.
+Thank you for considering a contribution! Please check out our detailed [contribution guide](./CONTRIBUTING.md) to learn more about how to help us improve the project.
