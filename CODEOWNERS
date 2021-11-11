@@ -1,2 +1,2 @@
-# These are the default code owners
+# These are the default code owners, which would be assigned automatically as PR reviewers.
 *    @pipeline-foundation/development
