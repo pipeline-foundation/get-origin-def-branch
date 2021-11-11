@@ -45,6 +45,11 @@ The name of the default branch of the target repository e.g. 'main', 'release' e
 ```
   ${{ steps.get-origin-default-branch.outputs.default_branch }}
 ```
+- example:
+```
+  - run: |
+      echo "The default branch of this repository is ${{ steps.get-origin-default-branch.outputs.default_branch }}"
+```
 
 ## Contributing
 
