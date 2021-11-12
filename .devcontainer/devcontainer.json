@@ -20,5 +20,7 @@
 		"dbaeumer.vscode-eslint",
 		"ms-vscode.vscode-typescript-next",
 		"ecmel.vscode-html-css",
+		// Docker specific
+		"ms-azuretools.vscode-docker"
 	],
 }
