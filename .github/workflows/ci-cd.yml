@@ -40,7 +40,7 @@ jobs:
           npm run build
 
       - name: GHASC check
-        uses: GeekMasher/advanced-security-compliance@v1.5
+        uses: GeekMasher/advanced-security-compliance@v1.6
         with:
           policy-path: policies/security-policy.yml
           token: ${{ secrets.GHASC_TOKEN }} # token requires 'public_repo' and 'security_events' scopes
