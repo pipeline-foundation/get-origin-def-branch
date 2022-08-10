@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/pipeline-foundation/get-origin-def-branch#readme",
   "dependencies": {
-    "@actions/core": "^1.9.0",
+    "@actions/core": "^1.9.1",
     "@octokit/request": "^6.2.0"
   },
   "devDependencies": {
