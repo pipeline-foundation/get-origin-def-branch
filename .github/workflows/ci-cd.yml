@@ -48,7 +48,7 @@ jobs:
       - if: github.ref == 'refs/heads/main' 
         name: GitHub tag generator
         id: tag_generator
-        uses: mathieudutour/github-tag-action@v6.0
+        uses: mathieudutour/github-tag-action@v6.1
         with: 
           github_token: ${{ secrets.GITHUB_TOKEN }}
           default_bump: false
