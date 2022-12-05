@@ -28,7 +28,7 @@
     "@octokit/request": "^6.2.2"
   },
   "devDependencies": {
-    "esbuild": "^0.15.11",
+    "esbuild": "^0.15.18",
     "eslint": "^7.32.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.26.0",
